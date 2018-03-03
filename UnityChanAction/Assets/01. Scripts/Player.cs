@@ -12,10 +12,35 @@ public class Player : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
+        CheckMouseLock();
+
         UpdateRotate();
         UpdateMove();
 	}
 
+
+    // Input
+
+    bool _mouseLock = true;
+
+    void CheckMouseLock()
+    {
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            _mouseLock = !_mouseLock;
+        }
+
+        if (_mouseLock)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+    }
 
     // Rotate
 
@@ -23,6 +48,9 @@ public class Player : MonoBehaviour
 
     void UpdateRotate()
     {
+        if (false == _mouseLock)
+            return;
+
         float rateSpeed = 360.0f;
         float addRotationY = Input.GetAxis("Mouse X") * rateSpeed;
         _rotationY += (addRotationY * Time.deltaTime);
