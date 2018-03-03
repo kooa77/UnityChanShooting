@@ -4,10 +4,14 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-	// Use this for initialization
-	void Start ()
+    public GameObject CharacterModel;
+
+
+    // Use this for initialization
+    void Start ()
     {
-	}
+        StartIdleState();
+    }
 	
 	// Update is called once per frame
 	void Update ()
@@ -15,8 +19,75 @@ public class Player : MonoBehaviour
         CheckMouseLock();
 
         UpdateRotate();
-        UpdateMove();
+        UpdateState();
 	}
+
+
+    // State
+
+    public enum eState
+    {
+        IDLE,
+        MOVE,
+    }
+    eState _state = eState.IDLE;
+
+    void UpdateState()
+    {
+        switch (_state)
+        {
+            case eState.IDLE:
+                UpdateIdleState();
+                break;
+            case eState.MOVE:
+                UpdateMoveState();
+                break;
+        }
+    }
+
+    void StartIdleState()
+    {
+        _state = eState.IDLE;
+        CharacterModel.GetComponent<Animator>().SetTrigger("idle");
+    }
+
+    void UpdateIdleState()
+    {
+        Vector3 inputVertical = new Vector3(0.0f, 0.0f, Input.GetAxis("Vertical"));
+        Vector3 inputHorizontal = new Vector3(Input.GetAxis("Horizontal"), 0.0f, 0.0f);
+        if( 0.0f != inputVertical.z || 0.0f!= inputHorizontal.x )
+        {
+            StartMoveState();
+        }
+    }
+
+    void StartMoveState()
+    {
+        _state = eState.MOVE;
+
+        Vector3 inputVertical = new Vector3(0.0f, 0.0f, Input.GetAxis("Vertical"));
+        if (0.0f < inputVertical.z)
+        {
+            CharacterModel.GetComponent<Animator>().SetTrigger("movefront");
+        }
+        else if (inputVertical.z < 0.0f)
+        {
+            CharacterModel.GetComponent<Animator>().SetTrigger("moveback");
+        }
+    }
+
+    void UpdateMoveState()
+    {
+        Vector3 inputVertical = new Vector3(0.0f, 0.0f, Input.GetAxis("Vertical"));
+        Vector3 inputHorizontal = new Vector3(Input.GetAxis("Horizontal"), 0.0f, 0.0f);
+        if (0.0f == inputVertical.z && 0.0f == inputHorizontal.x)
+        {
+            StartIdleState();
+            return;
+        }
+
+        UpdateMove();
+    }
 
 
     // Input
