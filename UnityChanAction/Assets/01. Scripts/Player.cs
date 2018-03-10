@@ -10,7 +10,8 @@ public class Player : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
-        StartIdleState();
+        InitState();
+        ChangeState(eState.IDLE);
     }
 	
 	// Update is called once per frame
@@ -30,41 +31,53 @@ public class Player : MonoBehaviour
         IDLE,
         MOVE,
     }
-    eState _state = eState.IDLE;
+
+    Dictionary<eState, State> _stateDic = new Dictionary<eState, State>();
+    State _currentState;
+
+    void InitState()
+    {
+        State idleState = new IdleState();
+        State moveState = new MoveState();
+
+        idleState.Init(this);
+        moveState.Init(this);
+
+        _stateDic.Add(eState.IDLE, idleState);
+        _stateDic.Add(eState.MOVE, moveState);
+    }
+
+    void ChangeState(eState nextState)
+    {
+        _currentState = _stateDic[nextState];
+        _currentState.Start();
+    }
 
     void UpdateState()
     {
-        switch (_state)
-        {
-            case eState.IDLE:
-                UpdateIdleState();
-                break;
-            case eState.MOVE:
-                UpdateMoveState();
-                break;
-        }
+        _currentState.Update();
     }
 
-    void StartIdleState()
+
+
+
+    public void StartIdleState()
     {
-        _state = eState.IDLE;
         CharacterModel.GetComponent<Animator>().SetTrigger("idle");
     }
 
-    void UpdateIdleState()
+    public void UpdateIdleState()
     {
         Vector3 inputVertical = new Vector3(0.0f, 0.0f, Input.GetAxis("Vertical"));
         Vector3 inputHorizontal = new Vector3(Input.GetAxis("Horizontal"), 0.0f, 0.0f);
         if( 0.0f != inputVertical.z || 0.0f!= inputHorizontal.x )
         {
-            StartMoveState();
+            ChangeState(eState.MOVE);
         }
     }
 
-    void StartMoveState()
+    public void StartMoveState()
     {
-        _state = eState.MOVE;
-
         Vector3 inputVertical = new Vector3(0.0f, 0.0f, Input.GetAxis("Vertical"));
         if (0.0f < inputVertical.z)
         {
@@ -74,15 +87,25 @@ public class Player : MonoBehaviour
         {
             CharacterModel.GetComponent<Animator>().SetTrigger("moveback");
         }
+
+        Vector3 inputHorizontal = new Vector3(Input.GetAxis("Horizontal"), 0.0f, 0.0f);
+        if (0.0f < inputHorizontal.x)
+        {
+            CharacterModel.GetComponent<Animator>().SetTrigger("moveright");
+        }
+        else if (inputHorizontal.x < 0.0f)
+        {
+            CharacterModel.GetComponent<Animator>().SetTrigger("moveleft");
+        }
     }
 
-    void UpdateMoveState()
+    public void UpdateMoveState()
     {
         Vector3 inputVertical = new Vector3(0.0f, 0.0f, Input.GetAxis("Vertical"));
         Vector3 inputHorizontal = new Vector3(Input.GetAxis("Horizontal"), 0.0f, 0.0f);
         if (0.0f == inputVertical.z && 0.0f == inputHorizontal.x)
         {
-            StartIdleState();
+            ChangeState(eState.IDLE);
             return;
         }
 
