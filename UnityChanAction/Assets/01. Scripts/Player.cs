@@ -18,6 +18,7 @@ public class Player : MonoBehaviour
 	void Update ()
     {
         CheckMouseLock();
+        UpdateInput();
 
         UpdateRotate();
         UpdateState();
@@ -30,6 +31,7 @@ public class Player : MonoBehaviour
     {
         IDLE,
         MOVE,
+        ATTACK,
     }
 
     Dictionary<eState, State> _stateDic = new Dictionary<eState, State>();
@@ -39,15 +41,18 @@ public class Player : MonoBehaviour
     {
         State idleState = new IdleState();
         State moveState = new MoveState();
+        State attackState = new AttackState();
 
         idleState.Init(this);
         moveState.Init(this);
+        attackState.Init(this);
 
         _stateDic.Add(eState.IDLE, idleState);
         _stateDic.Add(eState.MOVE, moveState);
+        _stateDic.Add(eState.ATTACK, attackState);
     }
 
-    void ChangeState(eState nextState)
+    public void ChangeState(eState nextState)
     {
         _currentState = _stateDic[nextState];
         _currentState.Start();
@@ -57,61 +62,7 @@ public class Player : MonoBehaviour
     {
         _currentState.Update();
     }
-
-
-
-
-    public void StartIdleState()
-    {
-        CharacterModel.GetComponent<Animator>().SetTrigger("idle");
-    }
-
-    public void UpdateIdleState()
-    {
-        Vector3 inputVertical = new Vector3(0.0f, 0.0f, Input.GetAxis("Vertical"));
-        Vector3 inputHorizontal = new Vector3(Input.GetAxis("Horizontal"), 0.0f, 0.0f);
-        if( 0.0f != inputVertical.z || 0.0f!= inputHorizontal.x )
-        {
-            ChangeState(eState.MOVE);
-        }
-    }
-
-    public void StartMoveState()
-    {
-        Vector3 inputVertical = new Vector3(0.0f, 0.0f, Input.GetAxis("Vertical"));
-        if (0.0f < inputVertical.z)
-        {
-            CharacterModel.GetComponent<Animator>().SetTrigger("movefront");
-        }
-        else if (inputVertical.z < 0.0f)
-        {
-            CharacterModel.GetComponent<Animator>().SetTrigger("moveback");
-        }
-
-        Vector3 inputHorizontal = new Vector3(Input.GetAxis("Horizontal"), 0.0f, 0.0f);
-        if (0.0f < inputHorizontal.x)
-        {
-            CharacterModel.GetComponent<Animator>().SetTrigger("moveright");
-        }
-        else if (inputHorizontal.x < 0.0f)
-        {
-            CharacterModel.GetComponent<Animator>().SetTrigger("moveleft");
-        }
-    }
-
-    public void UpdateMoveState()
-    {
-        Vector3 inputVertical = new Vector3(0.0f, 0.0f, Input.GetAxis("Vertical"));
-        Vector3 inputHorizontal = new Vector3(Input.GetAxis("Horizontal"), 0.0f, 0.0f);
-        if (0.0f == inputVertical.z && 0.0f == inputHorizontal.x)
-        {
-            ChangeState(eState.IDLE);
-            return;
-        }
-
-        UpdateMove();
-    }
-
+        
 
     // Input
 
@@ -136,6 +87,67 @@ public class Player : MonoBehaviour
         }
     }
 
+    public enum eInputDirection
+    {
+        NONE, FRONT, BACK, LEFT, RIGHT
+    }
+    eInputDirection _inputVerticalDirection = eInputDirection.NONE;
+    eInputDirection _inputHorizontalDirection = eInputDirection.NONE;
+    eInputDirection _inputAniDirection = eInputDirection.NONE;
+
+    void UpdateInput()
+    {
+        _inputVerticalDirection = eInputDirection.NONE;
+        _inputHorizontalDirection = eInputDirection.NONE;
+        _inputAniDirection = eInputDirection.NONE;
+
+        if (Input.GetKey(KeyCode.W))
+        {
+            _inputVerticalDirection = eInputDirection.FRONT;
+            _inputAniDirection = eInputDirection.FRONT;
+        }        
+        if (Input.GetKey(KeyCode.S))
+        {
+            _inputVerticalDirection = eInputDirection.BACK;
+            _inputAniDirection = eInputDirection.BACK;
+        }
+        
+        if (Input.GetKey(KeyCode.A))
+        {
+            _inputHorizontalDirection = eInputDirection.LEFT;
+            _inputAniDirection = eInputDirection.LEFT;
+        }
+        if (Input.GetKey(KeyCode.D))
+        {
+            _inputHorizontalDirection = eInputDirection.RIGHT;
+            _inputAniDirection = eInputDirection.RIGHT;
+        }
+
+        if(Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
+        {
+            ChangeState(eState.ATTACK);
+        }
+        if (Input.GetKeyUp(KeyCode.Space) || Input.GetMouseButtonUp(0))
+        {
+            ChangeState(eState.IDLE);
+        }
+    }
+
+    public eInputDirection GetInputVerticalDirection()
+    {
+        return _inputVerticalDirection;
+    }
+
+    public eInputDirection GetInputHorizontalDirection()
+    {
+        return _inputHorizontalDirection;
+    }
+
+    public eInputDirection GetAniDirection()
+    {
+        return _inputAniDirection;
+    }
+
     // Rotate
 
     float _rotationY = 0.0f;
@@ -154,28 +166,28 @@ public class Player : MonoBehaviour
 
     // Move
 
-    void UpdateMove()
+    public void UpdateMove()
     {
         Vector3 addPosition = Vector3.zero;
 
-        Vector3 inputVertical = new Vector3(0.0f, 0.0f, Input.GetAxis("Vertical"));
-        if( 0.0f < inputVertical.z )
+        switch(_inputVerticalDirection)
         {
-            addPosition.z = MoveOffset(5.0f);
-        }
-        else if(inputVertical.z < 0.0f)
-        {
-            addPosition.z = MoveOffset(-2.0f);
+            case eInputDirection.FRONT:
+                addPosition.z = MoveOffset(10.0f);
+                break;
+            case eInputDirection.BACK:
+                addPosition.z = MoveOffset(-5.0f);
+                break;
         }
 
-        Vector3 inputHorizontal = new Vector3(Input.GetAxis("Horizontal"), 0.0f, 0.0f);
-        if(0.0f < inputHorizontal.x)
+        switch (_inputHorizontalDirection)
         {
-            addPosition.x = MoveOffset(3.0f);
-        }
-        else if( inputHorizontal.x < 0.0f )
-        {
-            addPosition.x = MoveOffset(-3.0f);
+            case eInputDirection.LEFT:
+                addPosition.x = MoveOffset(-6.0f);
+                break;
+            case eInputDirection.RIGHT:
+                addPosition.x = MoveOffset(6.0f);
+                break;
         }
 
         transform.position += (transform.rotation * addPosition);
@@ -184,5 +196,23 @@ public class Player : MonoBehaviour
     float MoveOffset(float moveSpeed)
     {
         return (moveSpeed * Time.deltaTime);
+    }
+
+
+    // Attack
+
+    float _shotSpeed = 0.5f;
+
+    public float GetShotSpeed()
+    {
+        return _shotSpeed;
+    }
+
+
+    // Animation
+
+    public AnimationModule GetAnimationModule()
+    {
+        return CharacterModel.GetComponent<AnimationModule>();
     }
 }
