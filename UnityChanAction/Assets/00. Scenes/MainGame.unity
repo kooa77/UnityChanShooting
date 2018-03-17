@@ -121,7 +121,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 11855050}
-  - component: {fileID: 11855051}
   m_Layer: 0
   m_Name: Gun
   m_TagString: Untagged
@@ -142,17 +141,6 @@ Transform:
   m_Father: {fileID: 2022857831}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &11855051
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 11855049}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75ebb1b5bc0c3fb428041aba72af75fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &232794761
 GameObject:
   m_ObjectHideFlags: 0
@@ -341,7 +329,7 @@ Prefab:
     - target: {fileID: 9500000, guid: d6dad0fb52ba12f458cc7ffb66882391, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 5703de166e4cb1c4094b4d96b0b28a65, type: 2}
+      objectReference: {fileID: 9100000, guid: de54c12a59264294c871fc590b404b1c, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d6dad0fb52ba12f458cc7ffb66882391, type: 3}
   m_IsPrefabParent: 0
@@ -372,7 +360,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 696313088}
-  - component: {fileID: 696313089}
   m_Layer: 0
   m_Name: Gun
   m_TagString: Untagged
@@ -393,17 +380,6 @@ Transform:
   m_Father: {fileID: 1590808248}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &696313089
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 696313087}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75ebb1b5bc0c3fb428041aba72af75fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1014937880 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 100326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
@@ -1652,8 +1628,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.5, y: 4, z: 1}
-  m_Center: {x: 0, y: 2.5, z: 0}
+  m_Size: {x: 2, y: 10, z: 2}
+  m_Center: {x: 0, y: 5, z: 0}
 --- !u!54 &2022857833
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -151,8 +151,6 @@ public class Character : MonoBehaviour
 
     // Attack
 
-    protected GunItem _gun;
-
     public void Shot()
     {
         Quaternion fireRotation = transform.rotation;
@@ -170,9 +168,13 @@ public class Character : MonoBehaviour
     public GameObject GunObject;
     public GameObject BulletPrefab;
 
+    protected GunItem _gun;
+
     void InitItem()
     {
-        _gun = GunObject.GetComponent<GunItem>();
+        //_gun = GunObject.AddComponent<GunItem>();
+        //_gun = GunObject.AddComponent<NWayGunItem>();
+        _gun = GunObject.AddComponent<SprialGunItem>();
         _gun.SetBullet(BulletPrefab);
     }
 
