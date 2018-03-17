@@ -203,10 +203,17 @@ public class Player : MonoBehaviour
 
     float _shotSpeed = 0.5f;
 
+    public void Shot()
+    {
+    }
+
     public float GetShotSpeed()
     {
         return _shotSpeed;
     }
+
+
+    // Item
 
 
     // Animation
