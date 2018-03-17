@@ -4,14 +4,18 @@ using UnityEngine;
 
 public class State
 {
-    protected Player _character;
+    protected Character _character;
 
-    public void Init(Player character)
+    public void Init(Character character)
     {
         _character = character;
     }
 
     virtual public void Start()
+    {
+    }
+
+    virtual public void Stop()
     {
     }
 

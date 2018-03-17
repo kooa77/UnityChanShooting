@@ -18,6 +18,10 @@ public class BulletItem : MonoBehaviour
     {
         Vector3 moveOffset = _moveSpeed * Vector3.forward;
         transform.position += ((transform.rotation * moveOffset) * Time.deltaTime);
+    }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        GameObject.Destroy(gameObject);
     }
 }

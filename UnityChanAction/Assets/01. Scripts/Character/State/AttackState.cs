@@ -5,15 +5,23 @@ using UnityEngine;
 public class AttackState : State
 {
     bool _isShoot = false;
+    Quaternion _characterRotation;
 
     override public void Start()
     {
+        _characterRotation = _character.CharacterModel.transform.localRotation;
+
         _isShoot = false;
         _shotTime = _character.GetShotSpeed();
         _character.GetAnimationModule().Play("attack", null, null, () =>
         {
             _isShoot = true;
         });
+    }
+
+    override public void Stop()
+    {
+        _character.CharacterModel.transform.localRotation = _characterRotation;
     }
 
     public override void Update()
