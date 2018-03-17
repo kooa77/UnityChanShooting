@@ -10,6 +10,8 @@ public class Player : MonoBehaviour
     // Use this for initialization
     void Start ()
     {
+        InitItem();
+
         InitState();
         ChangeState(eState.IDLE);
     }
@@ -201,19 +203,30 @@ public class Player : MonoBehaviour
 
     // Attack
 
-    float _shotSpeed = 0.5f;
-
     public void Shot()
     {
+        Quaternion fireRotation = transform.rotation;
+        _gun.Fire(fireRotation);
     }
 
     public float GetShotSpeed()
     {
-        return _shotSpeed;
+        return _gun.GetShotSpeed();
     }
 
 
     // Item
+
+    public GameObject GunObject;
+    public GameObject BulletPrefab;
+
+    GunItem _gun;
+
+    void InitItem()
+    {
+        _gun = GunObject.GetComponent<GunItem>();
+        _gun.SetBullet(BulletPrefab);
+    }
 
 
     // Animation

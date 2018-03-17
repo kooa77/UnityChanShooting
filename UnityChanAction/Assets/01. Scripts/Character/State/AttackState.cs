@@ -9,7 +9,7 @@ public class AttackState : State
     override public void Start()
     {
         _isShoot = false;
-        _shotTime = 0.0f;
+        _shotTime = _character.GetShotSpeed();
         _character.GetAnimationModule().Play("attack", null, null, () =>
         {
             _isShoot = true;
@@ -44,6 +44,6 @@ public class AttackState : State
 
     void Shot()
     {
-        Debug.Log("Shot");
+        _character.Shot();
     }
 }
