@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class Player : Character
 {
+    override protected void InitGroupType()
+    {
+        _groupType = eGroupType.PLAYER;
+    }
+
     override protected void UpdateProcess()
     {
         CheckMouseLock();
@@ -11,6 +16,32 @@ public class Player : Character
 
         UpdateRotate();
         UpdateState();
+    }
+
+
+    // State
+
+    override protected void InitState()
+    {
+        base.InitState();
+
+        State idleState = new PlayerIdleState();
+        idleState.Init(this);
+        _stateDic[eState.IDLE] = idleState;
+
+        State attackState = new PlayerAttackState();
+        attackState.Init(this);
+        _stateDic[eState.ATTACK] = attackState;
+    }
+
+
+    // Item
+
+    override protected void InitItem()
+    {
+        _gun = GunObject.AddComponent<GunItem>();
+        _gun.InitGroupType(_groupType);
+        _gun.SetBullet(BulletPrefab);
     }
 
 

@@ -4,30 +4,33 @@ using UnityEngine;
 
 public class GunItem : MonoBehaviour
 {
-    // Use this for initialization
-	void Start ()
+    void Awake()
     {
-        // struct GunItemAttr
-        /*
-        GunItemAttr attr =ScriptManager.Instance.FindGunItemAttr(_itemID);
-        _shotSpeed = attr.shotSpeed;
-        _wayCount = attr.wayCount;
-        */
+        CreateGunModule();
     }
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
 
     // Interfaced
 
     protected GameObject _bulletPrefab;
+    protected Character.eGroupType _ownerGroupType;
 
     protected string _itemID = "default_gun";
-    protected float _shotSpeed = 0.05f;
-    protected int _wayCount = 6;
+
+    protected float _shotSpeed = 0.1f;
+
+    protected List<GunModule> _gunModuleList = new List<GunModule>();
+
+    virtual protected void CreateGunModule()
+    {
+        GunModule gunModule = new GunModule();
+        gunModule.Init(this);
+        _gunModuleList.Add(gunModule);
+    }
+    
+    public void InitGroupType(Character.eGroupType groupType)
+    {
+        _ownerGroupType = groupType;
+    }
 
     public void SetBullet(GameObject bulletPrefab)
     {
@@ -39,12 +42,22 @@ public class GunItem : MonoBehaviour
         return _shotSpeed;
     }
 
-    virtual public void Fire(Quaternion startRotation)
+    public void Fire(Quaternion startRotation)
     {
         if(null != _bulletPrefab)
         {
-            GameObject bulletObject = GameObject.Instantiate(_bulletPrefab, transform.position, startRotation);
-            bulletObject.transform.localScale = Vector3.one;
+            for(int i=0; i<_gunModuleList.Count; i++)
+            {
+                _gunModuleList[i].Fire(startRotation);
+            }
         }
+    }
+
+    public void CreateBullet(Quaternion startRotation)
+    {
+        GameObject bulletObject = GameObject.Instantiate(_bulletPrefab, transform.position, startRotation);
+        bulletObject.transform.localScale = Vector3.one;
+
+        bulletObject.GetComponent<BulletItem>().SetOwnerGroupType(_ownerGroupType);
     }
 }

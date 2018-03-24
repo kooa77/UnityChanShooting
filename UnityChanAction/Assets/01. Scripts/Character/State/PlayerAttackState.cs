@@ -2,21 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AttackState : State
+public class PlayerAttackState : State
 {
     bool _isShoot = false;
     Quaternion _characterRotation;
 
-    float _attackTime = 3.0f;
-    float _attackDuration = 0.0f;
-
     override public void Start()
     {
         _characterRotation = _character.CharacterModel.transform.localRotation;
-
-        _attackTime = Random.Range(18.0f, 20.0f);
-        _attackDuration = 0.0f;
-        // 더 생각해볼 주제 : 총이나 총알을 바꾸어 준다.
 
         _isShoot = false;
         _shotTime = _character.GetShotSpeed();
@@ -36,16 +29,8 @@ public class AttackState : State
         base.Update();
         _character.CharacterModel.transform.localPosition = Vector3.zero;
 
-        if(_attackTime <= _attackDuration)
-        {
-            _character.ChangeState(Character.eState.IDLE);
-        }
-        else
-        {
-            UpdateShoot();
-            _character.UpdateMove();
-        }
-        _attackDuration += Time.deltaTime;
+        UpdateShoot();
+        //_character.UpdateMove();
     }
 
 

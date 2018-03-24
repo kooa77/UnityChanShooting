@@ -4,20 +4,21 @@ using UnityEngine;
 
 public class SprialGunItem : GunItem
 {
-    Quaternion _shotRotation;
-    bool _isFire = false;
-
-    override public void Fire(Quaternion startRotation)
+    override protected void CreateGunModule()
     {
-        if (null != _bulletPrefab)
         {
-            if(false == _isFire)
-                _shotRotation = startRotation;
-            else
-                _shotRotation = _shotRotation * Quaternion.Euler(0.0f, 10.0f, 0.0f);
-            _isFire = true;
-            GameObject bulletObject = GameObject.Instantiate(_bulletPrefab, transform.position, _shotRotation);
-            bulletObject.transform.localScale = Vector3.one;
+            GunModule gunModule = new SpiralGunModule();
+            gunModule._wayCount = 5;
+            gunModule._rotateY = -1.0f;
+            gunModule.Init(this);
+            _gunModuleList.Add(gunModule);
+        }
+        {
+            GunModule gunModule = new SpiralGunModule();
+            gunModule._wayCount = 2;
+            gunModule._rotateY = 10.0f;
+            gunModule.Init(this);
+            _gunModuleList.Add(gunModule);
         }
     }
 }

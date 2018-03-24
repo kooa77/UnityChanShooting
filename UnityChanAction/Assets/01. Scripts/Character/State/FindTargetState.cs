@@ -2,34 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IdleState : State
+public class FindTargetState : State
 {
-    float _waitTime = 1.0f;
-    float _waitDuration = 0.0f;
-
     override public void Start()
     {
         _character.CharacterModel.GetComponent<Animator>().SetTrigger("idle");
-        //_character.FindTarget();
-
-        _waitTime = Random.Range(1.0f, 2.0f);
-        _waitDuration = 0.0f;
+        _character.FindTarget();
     }
 
     override public void Update()
     {
-        if (_waitTime <= _waitDuration)
-        {
-            _character.ChangeState(Player.eState.FIND_TARGET);
-        }
-        _waitDuration += Time.deltaTime;
-        /*
         if(null != _character.GetTarget())
         {
             _character.Look(_character.GetTarget());
-
             _character.ChangeState(Player.eState.ATTACK);
         }
-        */
+        else
+        {
+            _character.ChangeState(Player.eState.IDLE);
+        }
     }
 }
+

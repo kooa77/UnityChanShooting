@@ -8,15 +8,40 @@ public class Character : MonoBehaviour
 
     void Start ()
     {
-        InitItem();
-
-        InitState();
-        ChangeState(eState.IDLE);
+        Init();
     }
 	
 	void Update ()
     {
         UpdateProcess();
+    }
+
+    public void Init()
+    {
+        InitGroupType();
+        InitItem();
+        InitState();
+        ChangeState(eState.IDLE);
+    }
+
+    // GroupType
+
+    public enum eGroupType
+    {
+        PLAYER,
+        ENEMY,
+    }
+
+    protected eGroupType _groupType;
+
+    virtual protected void InitGroupType()
+    {
+        _groupType = eGroupType.PLAYER;
+    }
+
+    public eGroupType GetGroupType()
+    {
+        return _groupType;
     }
 
 
@@ -36,24 +61,28 @@ public class Character : MonoBehaviour
         IDLE,
         MOVE,
         ATTACK,
+        FIND_TARGET,
     }
 
-    Dictionary<eState, State> _stateDic = new Dictionary<eState, State>();
+    protected Dictionary<eState, State> _stateDic = new Dictionary<eState, State>();
     State _currentState;
 
-    protected void InitState()
+    virtual protected void InitState()
     {
         State idleState = new IdleState();
         State moveState = new MoveState();
         State attackState = new AttackState();
+        State findTargetState = new FindTargetState();
 
         idleState.Init(this);
         moveState.Init(this);
         attackState.Init(this);
+        findTargetState.Init(this);
 
         _stateDic.Add(eState.IDLE, idleState);
         _stateDic.Add(eState.MOVE, moveState);
         _stateDic.Add(eState.ATTACK, attackState);
+        _stateDic.Add(eState.FIND_TARGET, findTargetState);
     }
 
     public void ChangeState(eState nextState)
@@ -123,20 +152,20 @@ public class Character : MonoBehaviour
         switch (_inputVerticalDirection)
         {
             case eInputDirection.FRONT:
-                addPosition.z = MoveOffset(10.0f);
+                addPosition.z = MoveOffset(4.0f);
                 break;
             case eInputDirection.BACK:
-                addPosition.z = MoveOffset(-5.0f);
+                addPosition.z = MoveOffset(-2.0f);
                 break;
         }
 
         switch (_inputHorizontalDirection)
         {
             case eInputDirection.LEFT:
-                addPosition.x = MoveOffset(-6.0f);
+                addPosition.x = MoveOffset(-4.0f);
                 break;
             case eInputDirection.RIGHT:
-                addPosition.x = MoveOffset(6.0f);
+                addPosition.x = MoveOffset(4.0f);
                 break;
         }
 
@@ -150,6 +179,23 @@ public class Character : MonoBehaviour
 
 
     // Attack
+
+    protected Character _target = null;
+
+    public void Look(Character character)
+    {
+        transform.LookAt(character.transform);
+    }
+
+    public Character GetTarget()
+    {
+        return _target;
+    }
+
+    virtual public void FindTarget()
+    {
+        _target = null;
+    }
 
     public void Shot()
     {
@@ -170,12 +216,8 @@ public class Character : MonoBehaviour
 
     protected GunItem _gun;
 
-    void InitItem()
+    virtual protected void InitItem()
     {
-        //_gun = GunObject.AddComponent<GunItem>();
-        //_gun = GunObject.AddComponent<NWayGunItem>();
-        _gun = GunObject.AddComponent<SprialGunItem>();
-        _gun.SetBullet(BulletPrefab);
     }
 
 

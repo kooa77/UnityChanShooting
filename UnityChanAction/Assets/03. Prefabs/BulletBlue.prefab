@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 135650280590842400}
   - component: {fileID: 114549381288857344}
   m_Layer: 0
-  m_Name: Bullet
+  m_Name: BulletBlue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -86,7 +86,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 88157e674d7d0314db76940c73b69405, type: 2}
+  - {fileID: 2100000, guid: 00cf17fb11d4e76448c2096f7ee6aa4f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
