@@ -61,6 +61,7 @@ public class Character : MonoBehaviour
         IDLE,
         MOVE,
         TAKE_OFF,
+        LANDING,
         ATTACK,
         FIND_TARGET,
     }
@@ -73,18 +74,21 @@ public class Character : MonoBehaviour
         State idleState = new IdleState();
         State moveState = new MoveState();
         State takeOffState = new TakeOffState();
+        State landingState = new LandingState();
         State attackState = new AttackState();
         State findTargetState = new FindTargetState();
 
         idleState.Init(this);
         moveState.Init(this);
         takeOffState.Init(this);
+        landingState.Init(this);
         attackState.Init(this);
         findTargetState.Init(this);
 
         _stateDic.Add(eState.IDLE, idleState);
         _stateDic.Add(eState.MOVE, moveState);
         _stateDic.Add(eState.TAKE_OFF, takeOffState);
+        _stateDic.Add(eState.LANDING, landingState);
         _stateDic.Add(eState.ATTACK, attackState);
         _stateDic.Add(eState.FIND_TARGET, findTargetState);
     }
@@ -190,6 +194,19 @@ public class Character : MonoBehaviour
         float upSpeed = 3.0f;
         transform.position = Vector3.Lerp(transform.position, takeOffPos, upSpeed * Time.deltaTime);
         if( Vector3.Distance(transform.position, takeOffPos) < 0.5f )
+        {
+            transform.position = takeOffPos;
+            ChangeState(eState.IDLE);
+        }
+    }
+
+    public void UpdateLanding()
+    {
+        Vector3 takeOffPos = transform.position;
+        takeOffPos.y = 0.0f;
+        float downSpeed = 6.0f;
+        transform.position = Vector3.Lerp(transform.position, takeOffPos, downSpeed * Time.deltaTime);
+        if (Vector3.Distance(transform.position, takeOffPos) < 0.5f)
         {
             transform.position = takeOffPos;
             ChangeState(eState.IDLE);

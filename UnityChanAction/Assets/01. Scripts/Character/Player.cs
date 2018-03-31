@@ -101,7 +101,7 @@ public class Player : Character
             if( _isAir )
             {
                 //_isAir = false;
-                //ChangeState(eState.LANDING);
+                ChangeState(eState.LANDING);
             }
             else
             {
