@@ -6,18 +6,18 @@ public class BulletItem : MonoBehaviour
 {
     public float MoveSpeed = 10.0f;
 
-    Character.eGroupType _ownerGroupType;
-    float _lifeTime = 20.0f;
-    float _moveSpeed = 1.0f;
+    protected Character.eGroupType _ownerGroupType;
 
-    // Use this for initialization
+    protected float _lifeTime = 20.0f;
+    protected float _moveSpeed = 1.0f;
+    protected Character _target = null;
+
     void Start ()
     {
         GameObject.Destroy(gameObject, _lifeTime);
         _moveSpeed = MoveSpeed;
     }
 	
-	// Update is called once per frame
 	void Update ()
     {
         Vector3 moveOffset = _moveSpeed * Vector3.forward;
@@ -39,5 +39,10 @@ public class BulletItem : MonoBehaviour
     public void SetOwnerGroupType(Character.eGroupType ownerGroupType)
     {
         _ownerGroupType = ownerGroupType;
+    }
+
+    public void SetTarget(Character target)
+    {
+        _target = target;
     }
 }

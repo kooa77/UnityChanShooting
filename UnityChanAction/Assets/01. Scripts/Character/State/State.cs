@@ -22,4 +22,9 @@ public class State
     virtual public void Update()
     {
     }
+
+    virtual public void ChangeState(Character.eState nextState)
+    {
+        _character.ChangeState(nextState);
+    }
 }

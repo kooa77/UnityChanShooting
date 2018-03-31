@@ -96,13 +96,27 @@ public class Player : Character
             _inputAniDirection = eInputDirection.RIGHT;
         }
 
+        if(Input.GetMouseButtonDown(1))
+        {
+            if( _isAir )
+            {
+                //_isAir = false;
+                //ChangeState(eState.LANDING);
+            }
+            else
+            {
+                _currentState.ChangeState(eState.TAKE_OFF);
+            }
+            //_currentState.ChangeState(eState.TAKE_OFF);
+        }
+
         if(Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
         {
-            ChangeState(eState.ATTACK);
+            _currentState.ChangeState(eState.ATTACK);
         }
         if (Input.GetKeyUp(KeyCode.Space) || Input.GetMouseButtonUp(0))
         {
-            ChangeState(eState.IDLE);
+            _currentState.ChangeState(eState.IDLE);
         }
     }
 
@@ -114,7 +128,7 @@ public class Player : Character
         if (false == _mouseLock)
             return;
 
-        float rateSpeed = 360.0f;
+        float rateSpeed = 50.0f;
         float addRotationY = Input.GetAxis("Mouse X") * rateSpeed;
         _rotationY += (addRotationY * Time.deltaTime);
         transform.rotation = Quaternion.Euler(0.0f, _rotationY, 0.0f);

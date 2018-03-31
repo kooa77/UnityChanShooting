@@ -7,7 +7,7 @@ public class SpiralGunModule : GunModule
     Quaternion _shotRotation;
     bool _isFire = false;
 
-    override public void Fire(Quaternion startRotation)
+    override public void Fire(Quaternion startRotation, Character target)
     {
         if (false == _isFire)
             _shotRotation = startRotation;
@@ -21,7 +21,7 @@ public class SpiralGunModule : GunModule
         for (int i = 0; i < _wayCount; i++)
         {
             Quaternion shotRotation = _shotRotation * Quaternion.Euler(0.0f, yRot + (yRotOffset * i), 0.0f);
-            _parentGunItem.CreateBullet(shotRotation);
+            _parentGunItem.CreateBullet(shotRotation, target);
         }
     }
 }

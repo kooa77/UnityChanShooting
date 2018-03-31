@@ -14,8 +14,8 @@ public class GunModule
         _parentGunItem = parentGunItem;
     }
 
-    virtual public void Fire(Quaternion startRotation)
+    virtual public void Fire(Quaternion startRotation, Character target)
     {
-        _parentGunItem.CreateBullet(startRotation);
+        _parentGunItem.CreateBullet(startRotation, target);
     }
 }

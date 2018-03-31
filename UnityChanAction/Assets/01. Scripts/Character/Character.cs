@@ -60,27 +60,31 @@ public class Character : MonoBehaviour
     {
         IDLE,
         MOVE,
+        TAKE_OFF,
         ATTACK,
         FIND_TARGET,
     }
 
     protected Dictionary<eState, State> _stateDic = new Dictionary<eState, State>();
-    State _currentState;
+    protected State _currentState;
 
     virtual protected void InitState()
     {
         State idleState = new IdleState();
         State moveState = new MoveState();
+        State takeOffState = new TakeOffState();
         State attackState = new AttackState();
         State findTargetState = new FindTargetState();
 
         idleState.Init(this);
         moveState.Init(this);
+        takeOffState.Init(this);
         attackState.Init(this);
         findTargetState.Init(this);
 
         _stateDic.Add(eState.IDLE, idleState);
         _stateDic.Add(eState.MOVE, moveState);
+        _stateDic.Add(eState.TAKE_OFF, takeOffState);
         _stateDic.Add(eState.ATTACK, attackState);
         _stateDic.Add(eState.FIND_TARGET, findTargetState);
     }
@@ -145,6 +149,13 @@ public class Character : MonoBehaviour
 
     // Move
 
+    protected bool _isAir = false;
+
+    public void SetAir(bool isAir)
+    {
+        _isAir = isAir;
+    }
+
     public void UpdateMove()
     {
         Vector3 addPosition = Vector3.zero;
@@ -172,6 +183,19 @@ public class Character : MonoBehaviour
         transform.position += (transform.rotation * addPosition);
     }
 
+    public void UpdateTakeOff()
+    {
+        Vector3 takeOffPos = transform.position;
+        takeOffPos.y = 6.0f;
+        float upSpeed = 3.0f;
+        transform.position = Vector3.Lerp(transform.position, takeOffPos, upSpeed * Time.deltaTime);
+        if( Vector3.Distance(transform.position, takeOffPos) < 0.5f )
+        {
+            transform.position = takeOffPos;
+            ChangeState(eState.IDLE);
+        }
+    }
+
     float MoveOffset(float moveSpeed)
     {
         return (moveSpeed * Time.deltaTime);
@@ -184,7 +208,10 @@ public class Character : MonoBehaviour
 
     public void Look(Character character)
     {
-        transform.LookAt(character.transform);
+        Vector3 lookPos = character.transform.position;
+        lookPos.y = transform.position.y;
+        transform.LookAt(lookPos);
+        //transform.LookAt(character.transform);
     }
 
     public Character GetTarget()
@@ -194,13 +221,13 @@ public class Character : MonoBehaviour
 
     virtual public void FindTarget()
     {
-        _target = null;
+        _target = null;        
     }
 
     public void Shot()
     {
         Quaternion fireRotation = transform.rotation;
-        _gun.Fire(fireRotation);
+        _gun.Fire(fireRotation, _target);
     }
 
     public float GetShotSpeed()
